@@ -398,125 +398,102 @@ function nextQ(){
   });
 }
 
-const SOUP = {id:"soup",label:"Add Mushroom Soup? (+$1.90)",required:true,options:[{name:"No thanks",price:0},{name:"+ Mushroom Soup",price:1.90}]};
-const CHEESE_FRIES = {id:"cheese",label:"Add Cheese Sauce to Fries? (+$0.60)",required:true,options:[{name:"No thanks",price:0},{name:"+ Cheese Sauce",price:0.60}]};
-const SIDE = {id:"side",label:"🍽️ Want to add a side?",required:false,multi:true,options:[
-  {name:"+ Spaghetti — Chicken Bolognese",price:1.50},
-  {name:"+ Spaghetti — Mushroom Cream",price:1.50},
-  {name:"+ Butter Rice",price:0.70},
-  {name:"+ Crispy Fries",price:0.70},
-  {name:"+ Cheese Sauce",price:0.70},
-  {name:"+ Sunny Side Up Egg",price:0.70},
+// ── MODIFIERS ────────────────────────────────────────────────────────────────
+// Required: pick exactly 2 included sides for Grill Station items
+const SIDES_2 = {id:"sides2", label:"🍽️ Choose 2 Sides (Included)", required:true, multi:true, min:2, max:2, options:[
+  {name:"Fries", price:0},
+  {name:"Mash", price:0},
+  {name:"Coleslaw", price:0},
+  {name:"Garden Salad", price:0},
+  {name:"Rice", price:0},
+  {name:"Egg", price:0},
 ]};
 
-const SAUCE = {id:"sauce",label:"🍝 Choose your Spaghetti Sauce",required:true,options:[
-  {name:"Chicken Bolognese",price:0},
-  {name:"Mushroom Cream",price:0},
+// Optional: paid extra sides on top of any main
+const EXTRA_SIDES = {id:"extras", label:"➕ Add Extras (Optional)", required:false, multi:true, options:[
+  {name:"Extra Fries", price:0.80},
+  {name:"Extra Mash", price:0.80},
+  {name:"Extra Coleslaw", price:0.80},
+  {name:"Extra Garden Salad", price:0.80},
+  {name:"Extra Rice", price:0.80},
+  {name:"Extra Egg", price:0.80},
+  {name:"Extra Spaghetti Portion", price:1.50},
+  {name:"Cheese Sos", price:1.20},
 ]};
 
-// SIDE without spaghetti options (for spaghetti mains)
-const SIDE_NO_SPAG = {id:"side",label:"🍽️ Want to add a side?",required:false,multi:true,options:[
-  {name:"+ Butter Rice",price:0.70},
-  {name:"+ Crispy Fries",price:0.70},
-  {name:"+ Cheese Sauce",price:0.70},
-  {name:"+ Sunny Side Up Egg",price:0.70},
+// Korean Bowl: required base
+const BOWL_BASE = {id:"base", label:"🍚 Choose Your Base", required:true, options:[
+  {name:"Rice", price:0},
+  {name:"Fries", price:0},
+]};
+
+// Korean Bowl: required sauce
+const BOWL_SAUCE = {id:"bowlsauce", label:"🌶️ Choose Your Sauce", required:true, options:[
+  {name:"Sweet Chilli", price:0},
+  {name:"Soya Garlic", price:0},
+]};
+
+// Aglio Olio: required protein
+const AGLIO_PROTEIN = {id:"protein", label:"🍤 Choose Your Protein", required:true, options:[
+  {name:"Prawn", price:0},
+  {name:"Turkey", price:0},
+  {name:"Chicken Bite", price:0},
+]};
+
+// Aglio Olio: required spice level
+const AGLIO_SPICE = {id:"spice", label:"🌶️ Spice Level", required:true, options:[
+  {name:"Spicy", price:0},
+  {name:"Non-Spicy", price:0},
 ]};
 
 const DEFAULT_MENU = [
-  {id:"c1",name:"Shawarma",emoji:"🌯",items:[
-    {id:"sh1",name:"Mixed Shawarma Combo (Rice & Fries)",price:6.90,desc:"Go all out — beef, chicken, fluffy rice and crispy fries."},
-    {id:"sh2",name:"Mixed Shawarma (Beef & Chicken)",price:6.90,desc:"The best of beef and chicken together in one satisfying wrap."},
-    {id:"sh3",name:"Mixed Shawarma with Rice",price:6.90,desc:"Beef and chicken shawarma served with fragrant steamed rice."},
-    {id:"sh4",name:"Mixed Shawarma with Fries",price:6.90,desc:"Double the meat, double the flavour — with crispy golden fries."},
-    {id:"sh5",name:"Beef Shawarma Combo (Rice & Fries)",price:6.90,desc:"The full deal — beef shawarma served with rice and fries."},
-    {id:"sh6",name:"Chicken Shawarma Combo (Rice & Fries)",price:5.90,desc:"Best of both worlds — spiced chicken shawarma with rice and fries."},
-    {id:"sh7",name:"Beef Shawarma",price:5.90,desc:"Juicy seasoned beef wrapped up with bold Middle Eastern flavour."},
-    {id:"sh8",name:"Beef Shawarma with Rice",price:5.90,desc:"Tender beef shawarma served on a bed of fragrant steamed rice."},
-    {id:"sh9",name:"Beef Shawarma with Fries",price:5.90,desc:"Flavour-packed beef wrap paired with crispy golden fries."},
-    {id:"sh10",name:"Beef Shawarma with Salad",price:5.90,desc:"Light and satisfying beef wrap with a fresh garden salad."},
-    {id:"sh11",name:"Chicken Shawarma",price:4.90,desc:"Tender spiced chicken wrapped up and ready to devour."},
-    {id:"sh12",name:"Chicken Shawarma with Rice",price:4.90,desc:"Spiced chicken shawarma with a side of fluffy steamed rice."},
-    {id:"sh13",name:"Chicken Shawarma with Fries",price:4.90,desc:"Crispy golden fries paired with a well-seasoned chicken wrap."},
-    {id:"sh14",name:"Chicken Shawarma with Salad",price:4.90,desc:"Light chicken wrap paired with a refreshing garden salad."},
+  {id:"c1",name:"The Grill Station",emoji:"🔥",items:[
+    {id:"g1",name:"Aloha Hawaiian Chop ⭐ PREMIUM",price:6.50,desc:"Juicy chicken thigh with caramelized pineapple & savory ham.",modifiers:[SIDES_2,EXTRA_SIDES]},
+    {id:"g2",name:"Fiesta Mexican Chop",price:6.00,desc:"Smoky, zesty spice rub for an authentic flavor kick.",modifiers:[SIDES_2,EXTRA_SIDES]},
+    {id:"g3",name:"Signature Chicken Chop",price:5.50,desc:"Classic char-grilled thigh served with rich brown gravy.",modifiers:[SIDES_2,EXTRA_SIDES]},
+    {id:"g4",name:"Spicy Sambal Chop",price:5.50,desc:"Grilled thigh glazed in aromatic house-made sambal.",modifiers:[SIDES_2,EXTRA_SIDES]},
   ]},
-  {id:"c2",name:"Chicken Mains",emoji:"🍗",items:[
-    {id:"m1",name:"Garlic Soya Korean Fried Chicken with Spaghetti",price:6.50,desc:"Korean fried chicken meets spaghetti in one bold flavour combo.",modifiers:[SAUCE,SIDE]},
-    {id:"m2",name:"Sweet Spicy Korean Fried Chicken (Spaghetti & Salad)",price:6.50,desc:"Korean chicken heat meets spaghetti in one satisfying plate.",modifiers:[SAUCE,SIDE]},
-    {id:"m3",name:"Hawaiian Chicken Chop (Mashed & Salad)",price:6.20,desc:"A tropical twist on your fave chop with sweet pineapple flavour.",modifiers:[SIDE]},
-    {id:"m4",name:"Mexican Chicken Chop (Mashed, Salad & Nacho Cheese)",price:5.50,desc:"Juicy chicken chop with a fiesta twist — nacho cheese and all the extras.",modifiers:[SIDE]},
-    {id:"m5",name:"Mexican Chicken Cutlet (Fries, Salad & Nacho Cheese)",price:5.50,desc:"Crispy cutlet with a Mexican kick and a nacho cheese drizzle.",modifiers:[SIDE]},
-    {id:"m6",name:"Garlic Soya Korean Fried Chicken (Fries & Salad)",price:5.50,desc:"Sticky savoury Korean chicken with a bold garlicky soya glaze.",modifiers:[SIDE]},
-    {id:"m7",name:"Sweet Spicy Korean Fried Chicken (Fries)",price:5.50,desc:"Addictive sweet heat on crispy Korean chicken, with golden fries.",modifiers:[SIDE]},
-    {id:"m8",name:"Sweet Spicy Korean Fried Chicken (Rice)",price:5.50,desc:"Sweet and spicy Korean chicken on a bed of steamed rice.",modifiers:[SIDE]},
-    {id:"m9",name:"Sweet Spicy Korean Fried Chicken (Rice & Salad)",price:5.50,desc:"Sweet heat chicken over rice with a crisp garden salad.",modifiers:[SIDE]},
-    {id:"m10",name:"Black Pepper Chicken (Rice & Salad)",price:5.00,desc:"Bold black pepper sauce over grilled chicken, served with rice.",modifiers:[SIDE]},
-    {id:"m11",name:"Mushroom Sauce Chicken (Rice & Salad)",price:5.00,desc:"Creamy mushroom sauce over tender chicken, served with rice.",modifiers:[SIDE]},
-    {id:"m12",name:"Chicken Chop (Mashed & Salad)",price:4.80,desc:"Golden juicy chicken chop with creamy mash and fresh salad.",modifiers:[SIDE]},
-    
-    {id:"m14",name:"Chicken Cutlet (Fries & Salad)",price:4.80,desc:"Crunchy golden cutlet served up with fries and garden salad.",modifiers:[SIDE]},
+  {id:"c2",name:"Fried & Crispy",emoji:"🍗",items:[
+    {id:"fr1",name:"Hot & Spicy Cutlet",price:6.00,desc:"Crispy fillet tossed in a fiery spice rub. A campus favorite!",modifiers:[EXTRA_SIDES]},
+    {id:"fr2",name:"Golden Salted Egg Cutlet",price:6.00,desc:"Rich, creamy salted egg lava over a crunchy chicken fillet.",modifiers:[EXTRA_SIDES]},
+    {id:"fr3",name:"Classic Crispy Cutlet",price:5.50,desc:"Shatteringly crisp fillet served with fresh coleslaw.",modifiers:[EXTRA_SIDES]},
+    {id:"fr4",name:"Classic Fish & Chips",price:5.50,desc:"Golden-battered white fish with a mountain of crispy fries.",modifiers:[EXTRA_SIDES]},
   ]},
-  {id:"c3",name:"Fish Mains",emoji:"🐟",items:[
-    {id:"f1",name:"Grilled Fish (Spaghetti & Salad)",price:6.00,desc:"Grilled fish meets spaghetti — a surprisingly satisfying pair.",modifiers:[SAUCE,SIDE]},
-    {id:"f2",name:"Grilled Fish (Cheese Fries & Salad)",price:5.70,desc:"Grilled fish gets a cheesy upgrade — served with loaded cheese fries.",modifiers:[SIDE]},
-    {id:"f3",name:"Mexican Fish & Chips (Salad & Nacho Cheese)",price:5.50,desc:"Crispy fish and chips with a fun nacho cheese kick on it.",modifiers:[SIDE]},
-    {id:"f4",name:"Grilled Fish (Fries & Salad)",price:5.00,desc:"Tender grilled fish paired with crispy fries and a fresh salad.",modifiers:[SIDE]},
-    {id:"f5",name:"Grilled Fish (Mashed Potato & Salad)",price:5.00,desc:"Soft grilled fish served with creamy mash and a garden salad.",modifiers:[SIDE]},
-    {id:"f6",name:"Grilled Fish Butter Rice (Salad)",price:5.00,desc:"Fragrant buttery rice topped with tender well-seasoned grilled fish.",modifiers:[SIDE]},
-    
-    {id:"f8",name:"Fish & Chips",price:4.80,desc:"Classic crispy fish with golden fries — a timeless combo.",modifiers:[SIDE]},
-    {id:"f9",name:"Tempura Fish & Chips",price:4.80,desc:"Light airy tempura batter, golden fries and a fresh side salad.",modifiers:[SIDE]},
-    {id:"f10",name:"Garden Salad",price:4.50,desc:"Fresh crisp greens tossed lightly — clean and refreshing."},
-    {id:"f11",name:"Mushroom Soup",price:2.00,desc:"Warm velvety mushroom soup — comfort in a bowl."},
+  {id:"c3",name:"Ocean Catch",emoji:"🐟",items:[
+    {id:"o1",name:"Grilled Fish w/ Spaghetti ⭐ PREMIUM",price:6.50,desc:"Flaky white fish paired with a full portion of al dente spaghetti.",modifiers:[EXTRA_SIDES]},
+    {id:"o2",name:"Spicy Sambal Fish",price:6.00,desc:"Tender fish grilled and smothered in robust house sambal.",modifiers:[EXTRA_SIDES]},
+    {id:"o3",name:"Signature Grilled Fish",price:5.50,desc:"Lightly seasoned and char-grilled to lock in sweetness.",modifiers:[EXTRA_SIDES]},
   ]},
-  {id:"c4",name:"Spaghetti",emoji:"🍝",items:[
-    {id:"sp1",name:"Spaghetti Chicken Bolognese",price:4.80,desc:"Hearty chicken bolognese tossed through perfectly cooked spaghetti.",modifiers:[SIDE_NO_SPAG]},
-    {id:"sp2",name:"Spaghetti Mushroom Cream",price:4.80,desc:"Silky mushroom cream sauce over a generous plate of spaghetti.",modifiers:[SIDE_NO_SPAG]},
+  {id:"c4",name:"Pasta & K-Bowls",emoji:"🍝",items:[
+    {id:"p1",name:"Aglio Olio",price:6.00,desc:"Fragrant garlic & olive oil toss with your choice of protein.",modifiers:[AGLIO_PROTEIN,AGLIO_SPICE,EXTRA_SIDES]},
+    {id:"p2",name:"Korean Bowl",price:6.00,desc:"Trendy Seoul flavors served with your choice of base & sauce.",modifiers:[BOWL_BASE,BOWL_SAUCE,EXTRA_SIDES]},
+    {id:"p3",name:"Chicken Bolognese",price:5.00,desc:"Comforting slow-simmered meat sauce with tomato and herbs.",modifiers:[EXTRA_SIDES]},
   ]},
-  {id:"c5",name:"Snacks & Sides",emoji:"🍟",items:[
-    {id:"sn0",name:"Cheese Fries",price:3.00,desc:"Crispy golden fries smothered in warm gooey cheese sauce.",needsKitchen:true},
-    {id:"sn1",name:"Mozzarella Cheese Sticks",price:3.50,desc:"Pull-apart cheesy sticks with a perfectly golden crispy crunch."},
-    {id:"sn2",name:"Popcorn Chicken",price:3.50,desc:"Bite-sized crispy chicken pieces you won't stop munching on."},
-    {id:"sn3",name:"Chicken Nuggets (6 pcs)",price:3.00,desc:"Golden crispy nuggets — the classic snack that never gets old."},
-    
-    {id:"sn5",name:"Spicy Chicken Nuggets (5 pcs)",price:3.00,desc:"Fiery and crispy — the bold snack you keep coming back for."},
-    {id:"sn6",name:"Potato Apple Salad",price:2.80,desc:"A sweet-savoury potato salad with a refreshing fruity twist."},
-    {id:"sn7",name:"Chicken Cheese Hotdog Bun",price:2.70,desc:"Juicy chicken sausage in a soft bun with melted cheese."},
-    {id:"sn8",name:"Korean Sandwich",price:2.50,desc:"Soft bread meets bold Korean-inspired filling — seriously good."},
-    {id:"sn9",name:"Chicken Burger",price:2.00,desc:"Simple, satisfying chicken burger done just right."},
-    {id:"sn10",name:"Chicken Cheese Sausage",price:2.00,desc:"Savoury chicken sausage with a cheesy surprise inside."},
-    {id:"sn11",name:"Fish Burger",price:2.00,desc:"Crispy fish fillet in a soft bun — simple and always satisfying."},
-    {id:"sn12",name:"Hash Browns (3 pcs)",price:2.00,desc:"Golden crispy hash browns — perfect any time of day."},
-    {id:"sn13",name:"Onion Rings",price:2.00,desc:"Crunchy battered rings with that satisfying snap every time."},
-    {id:"sn14",name:"Sandwich",price:1.60,desc:"A simple fuss-free sandwich that always hits the spot."},
+  {id:"c5",name:"Sides & Extras",emoji:"🍟",items:[
+    {id:"s1",name:"Fries",price:0.80,desc:"Crispy golden fries.",needsKitchen:true},
+    {id:"s2",name:"Mash",price:0.80,desc:"Smooth buttery mashed potato.",needsKitchen:true},
+    {id:"s3",name:"Coleslaw",price:0.80,desc:"Creamy crunchy coleslaw — refreshing and tangy.",needsKitchen:true},
+    {id:"s4",name:"Garden Salad",price:0.80,desc:"Fresh crisp greens — clean and refreshing.",needsKitchen:true},
+    {id:"s5",name:"Rice",price:0.80,desc:"Steamed fragrant rice.",needsKitchen:true},
+    {id:"s6",name:"Egg",price:0.80,desc:"A perfectly cooked egg.",needsKitchen:true},
+    {id:"s7",name:"Extra Spaghetti Portion",price:1.50,desc:"A generous portion of al dente spaghetti.",needsKitchen:true},
+    {id:"s8",name:"Cheese Sos",price:1.20,desc:"Rich creamy cheese sauce.",needsKitchen:true},
   ]},
-  {id:"c6",name:"Breakfast",emoji:"🥞",avail:"before-1045",items:[
-    {id:"b1",name:"Omelette Breakfast Set",price:4.50,desc:"Fluffy omelette served with toast, hash brown and chicken hotdog."},
-    {id:"b2",name:"Toast Breakfast Set",price:4.00,desc:"Buttery toast, hash brown, chicken hotdog and salad — start right."},
-    {id:"b3",name:"Scrambled Egg Breakfast Set",price:4.00,desc:"Fluffy scrambled eggs with toast, hash brown and chicken hotdog."},
-  ]},
-  {id:"c7",name:"Add-ons",emoji:"➕",items:[
-    {id:"a1",name:"Add Grilled Fish",price:3.80,desc:"Light tender grilled fish to complement your plate."},
-    {id:"a2",name:"Add Chicken Chop",price:3.50,desc:"A golden crispy chicken chop added to your meal."},
-    {id:"a3",name:"Add Chicken Cutlet",price:3.50,desc:"Upgrade with a crunchy tender chicken cutlet on the side."},
-    {id:"a4",name:"Add Fried Fish",price:3.50,desc:"Extra crispy fried fish to make your meal more satisfying."},
-    {id:"a5",name:"Add Chicken Shawarma",price:2.00,desc:"Juicy seasoned shawarma to boost any plate."},
-    {id:"a6",name:"Add Spaghetti",price:1.50,desc:"Toss in some spaghetti to make your meal extra hearty."},
-    {id:"a7",name:"Add Cheese Sauce",price:0.70,desc:"Creamy cheese sauce to level up any dish."},
-    {id:"a8",name:"Add Sunny Side Up Egg",price:0.70,desc:"A perfectly fried egg with a gorgeous runny yolk."},
-    {id:"a9",name:"Add Fries",price:0.70,desc:"Golden crispy fries — always a good idea."},
-    {id:"a10",name:"Add Mashed Potato",price:0.70,desc:"Smooth buttery mash to round off your meal."},
-    {id:"a11",name:"Add Rice",price:0.70,desc:"A serving of steamed rice to go with your main."},
-    {id:"a12",name:"Add Salad",price:0.70,desc:"Fresh garden salad to add some greens to your order."},
-    {id:"a13",name:"Take-Away Packaging",price:0.30,desc:"Pack it up to go — small charge applies."},
-    {id:"a14",name:"Take-Away (Bring Your Own Box)",price:0.00,desc:"Eco-friendly option — bring your own box, on us."},
+  {id:"c6",name:"Premium Add-ons",emoji:"⭐",items:[
+    {id:"a1",name:"Add Chicken Chop",price:4.00,desc:"Grilled chicken chop add-on."},
+    {id:"a2",name:"Add Chicken Cutlet",price:4.00,desc:"Crispy chicken cutlet add-on."},
+    {id:"a3",name:"Add Grilled Fish",price:4.00,desc:"Tender grilled fish add-on."},
+    {id:"a4",name:"Add Fried Fish",price:4.00,desc:"Crispy fried fish add-on."},
+    {id:"a5",name:"Take-Away Box",price:0.30,desc:"Pack it up to go — small charge applies."},
+    {id:"a6",name:"Take-Away (BYO Box)",price:0.00,desc:"Eco-friendly — bring your own box, on us."},
   ]},
 ];
 
 
 // ── STATE ───────────────────────────────────────────────────────────────────
-// Clear any old cache versions on upgrade — fresh start for SIA system.
-["menu_sia_v0"].forEach(k=>localStorage.removeItem(k));
-let menu    = ls("menu_sia_v1", DEFAULT_MENU);
+// Bump version on every menu change → forces fresh load on existing devices.
+["menu_sia_v0","menu_sia_v1"].forEach(k=>localStorage.removeItem(k));
+let menu    = ls("menu_sia_v2", DEFAULT_MENU);
 // Reset all avail flags to true on load — Firebase will apply correct state
 // This ensures admin toggles always take effect even on cached phones
 menu.forEach(cat=>cat.items.forEach(item=>{ item.avail = true; }));
@@ -530,7 +507,7 @@ let modChoices = {};
 let pendingOrder = null;
 let diningOption = null; // null = not yet selected
 
-function saveMenu()  { lss("menu_sia_v1", menu); }
+function saveMenu()  { lss("menu_sia_v2", menu); }
 function saveOrders(){ /* orders saved to Firebase */ }
 
 // ── AUTH ──────────────────────────────────────────────────────────────────────
@@ -650,17 +627,14 @@ function switchCat(i){ curCat=i; renderMenu(); }
 function getItem(id){ for(const c of menu) for(const i of c.items) if(i.id===id) return i; return null; }
 
 function isAddon(id){
-  const addonCat = menu.find(c=>c.id==="c7");
+  // Premium Add-ons category (c6) — chicken/fish add-ons + takeaway box
+  const addonCat = menu.find(c=>c.id==="c6");
   return addonCat ? addonCat.items.some(i=>i.id===id) : false;
 }
 
 function isSnackOnly(id){
-  const snackCat = menu.find(c=>c.id==="c5");
-  if(!snackCat) return false;
-  const item = snackCat.items.find(i=>i.id===id);
-  if(!item) return false;
-  // Items with needsKitchen:true are NOT snack-only (they need kitchen display)
-  return item.needsKitchen !== true;
+  // SIA has no "snacks-only" fast lane — every order goes through kitchen.
+  return false;
 }
 
 function cartHasMain(){
@@ -671,42 +645,15 @@ function handleAdd(id){
   const item = getItem(id);
   if(!item) return;
 
-  // Add-ons require a main in cart
+  // Premium add-ons (chicken/fish/box) require a main in cart
   if(isAddon(id) && !cartHasMain()){
     toast("⚠️ Please order a main item first!", "#C4572A");
     return;
   }
+
   if(item.modifiers && item.modifiers.length>0){
-    // Filter modifiers based on admin toggles
-    const sideOn = ls("mod_side_sia", true);
-    const soupOn = ls("mod_soup_sia", true);
-
-    // Build dynamic SIDE options based on menu availability
-    const sideOptions = [
-      {name:"+ Spaghetti — Chicken Bolognese", price:1.50},
-      {name:"+ Spaghetti — Mushroom Cream", price:1.50},
-      {name:"+ Butter Rice", price:0.70},
-      {name:"+ Crispy Fries", price:0.70},
-      {name:"+ Cheese Sauce", price:0.70},
-      {name:"+ Sunny Side Up Egg", price:0.70},
-    ];
-
-    // Build side options — remove spaghetti if item already has spaghetti
-    const hasSauce = item.modifiers.some(m=>m.id==="sauce");
-    const isSpagItem = ["sp1","sp2"].includes(item.id);
-    const effectiveSideOptions = isSpagItem
-      ? sideOptions.filter(o=>!o.name.includes("Spaghetti"))
-      : sideOptions;
-    const filteredItem = {...item, modifiers: item.modifiers
-      .filter(m=> (m.id==="side" && sideOn) || m.id==="sauce")
-      .map(m=> m.id==="side" ? {...m, options: effectiveSideOptions} : m)};
-
-    if(filteredItem.modifiers.length>0){
-      modItem = filteredItem; modChoices = {};
-      openModModal(filteredItem);
-    } else {
-      addToCart(item, {});
-    }
+    modItem = item; modChoices = {};
+    openModModal(item);
   } else {
     addToCart(item, {});
   }
@@ -728,11 +675,9 @@ function removeFromCart(cartKey){
 }
 
 function isMain(id){
-  // Cheesy Fries also gets takeaway charge
-  if(id==="sn10") return true;
-  // Find which category this item belongs to
+  // Mains are categories c1 (Grill), c2 (Fried & Crispy), c3 (Ocean Catch), c4 (Pasta & K-Bowls)
   for(const cat of menu){
-    if(cat.id==="c1"||cat.id==="c2"||cat.id==="c3"||cat.id==="c4"){ // Shawarma, Chicken Mains, Fish Mains, Spaghetti
+    if(["c1","c2","c3","c4"].includes(cat.id)){
       if(cat.items.find(i=>i.id===id)) return true;
     }
   }
@@ -740,13 +685,13 @@ function isMain(id){
 }
 
 function orderNeedsKitchen(){
-  // Goes to kitchen if cart has any main OR any add-on item
-  return cart.some(x=>isMain(x.id) || isAddon(x.id));
+  // At SIA, every paid order goes to the kitchen — no snacks-only bypass.
+  return cart.length > 0;
 }
 
 function isSnacksOnly(){
-  // Returns true if cart has ONLY snack items from Snacks & Sides category
-  return cart.length > 0 && cart.every(x => isSnackOnly(x.id));
+  // SIA has no snacks-only fast lane.
+  return false;
 }
 
 function takeawayCharge(){
@@ -802,29 +747,19 @@ function updateCartFab(){
 function openModModal(item){
   document.getElementById("mod-title").textContent = item.name;
   document.getElementById("mod-price").textContent = fmtS(item.price);
-  const hasSauce = item.modifiers.some(m=>m.id==="sauce");
-  const onlySide = item.modifiers.length===1 && item.modifiers[0].id==="side";
-  
-  if(hasSauce){
-    // Sauce required — show item name as title
-    document.getElementById("mod-title").textContent = item.name;
-    document.getElementById("mod-price").textContent = fmtS(item.price);
-  } else if(onlySide){
-    document.getElementById("mod-title").textContent = "🍽️ Want to add a side?";
-    document.getElementById("mod-price").textContent = item.name+" — "+fmtS(item.price);
-  }
-  
-  // Show "No Thanks" only when no required modifier
+
+  // Show "No Thanks" only when ALL modifiers are optional (so customer can skip everything)
   const hasRequired = item.modifiers.some(m=>m.required);
   const hasOptional = item.modifiers.some(m=>!m.required);
   const noThanksBtn = document.getElementById("mod-no-thanks");
   if(noThanksBtn) noThanksBtn.style.display = (!hasRequired && hasOptional) ? "block" : "none";
-  // Confirm button
+
+  // Confirm button starts disabled if any required modifier is unfilled
   const confirmBtn = document.getElementById("mod-confirm");
-  if(confirmBtn){ 
+  if(confirmBtn){
     confirmBtn.disabled = hasRequired ? true : false;
     confirmBtn.style.opacity = hasRequired ? "0.4" : "1";
-    confirmBtn.textContent = hasSauce ? "Add to Order ✓" : "Add to Order ✓";
+    confirmBtn.textContent = "Add to Order ✓";
   }
   renderModOptions();
   document.getElementById("mod-modal").classList.remove("hidden");
@@ -836,15 +771,24 @@ function renderModOptions(){
   let html = "";
   modItem.modifiers.forEach(mod=>{
     if(mod.multi){
-      // Multi-select (checkboxes) for SIDE
+      // Multi-select (checkboxes)
       const selected = modChoices[mod.id] || [];
+      // For required multi with min/max, show a live counter (e.g. "1 / 2")
+      let counterTxt = "";
+      if(mod.required && (mod.min||mod.max)){
+        const target = mod.max || mod.min;
+        counterTxt = ` <span style="color:${selected.length===target?"#16A34A":"#C4572A"};font-weight:700">(${selected.length}/${target})</span>`;
+      }
+      const atMax = mod.max && selected.length >= mod.max;
       html += `<div style="margin-bottom:20px">
-        <div style="font-size:11px;color:#78716C;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px">${mod.label}</div>
+        <div style="font-size:11px;color:#78716C;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px">${mod.label}${counterTxt}</div>
         ${mod.options.map(opt=>{
           const name = opt.name||opt;
           const price = opt.price||0;
           const sel = selected.some(s=>s.name===name);
-          return `<button onclick="pickModMulti('${mod.id}','${name}',${price})" style="display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:10px;padding:14px 18px;background:${sel?"#FDF0EA":"#F5F3F0"};color:${sel?"#9A3E1C":"#1C1917"};border:2px solid ${sel?"#C4572A":"#E5E0D8"};border-radius:12px;font-size:15px;font-weight:${sel?600:400};transition:all 0.15s;text-align:left">
+          // If at max and not already selected, dim the option
+          const disabled = atMax && !sel;
+          return `<button onclick="pickModMulti('${mod.id}','${name}',${price})" style="display:flex;justify-content:space-between;align-items:center;width:100%;margin-bottom:10px;padding:14px 18px;background:${sel?"#FDF0EA":"#F5F3F0"};color:${sel?"#9A3E1C":(disabled?"#A8A29E":"#1C1917")};border:2px solid ${sel?"#C4572A":"#E5E0D8"};border-radius:12px;font-size:15px;font-weight:${sel?600:400};transition:all 0.15s;text-align:left;opacity:${disabled?0.5:1}">
             <span style="display:flex;align-items:center;gap:10px">
               <span style="width:18px;height:18px;border-radius:4px;border:2px solid ${sel?"#C4572A":"#D4CFC8"};background:${sel?"#C4572A":"transparent"};display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">${sel?`<span style="color:#fff;font-size:12px;font-weight:700">✓</span>`:""}</span>
               ${name}
@@ -854,7 +798,7 @@ function renderModOptions(){
         }).join("")}
       </div>`;
     } else {
-      // Single select (radio) for SOUP etc
+      // Single select (radio)
       html += `<div style="margin-bottom:20px">
         <div style="font-size:11px;color:#78716C;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px">${mod.label}</div>
         ${mod.options.map(opt=>{
@@ -873,9 +817,15 @@ function renderModOptions(){
     }
   });
   document.getElementById("mod-options").innerHTML = html;
-  // Confirm button always enabled (SIDE is optional, SOUP is required)
+  // Enable confirm button only when ALL required modifiers are satisfied
   const requiredMods = modItem.modifiers.filter(m=>m.required);
-  const allPicked = requiredMods.every(m=>modChoices[m.id]);
+  const allPicked = requiredMods.every(m => {
+    if(m.multi){
+      const count = (modChoices[m.id]||[]).length;
+      return count >= (m.min || 1);
+    }
+    return !!modChoices[m.id];
+  });
   const btn = document.getElementById("mod-confirm");
   btn.disabled = !allPicked;
   btn.style.opacity = allPicked ? "1" : "0.4";
@@ -884,27 +834,35 @@ function renderModOptions(){
 function pickModMulti(modId, name, price){
   if(!modChoices[modId]) modChoices[modId] = [];
   const idx = modChoices[modId].findIndex(s=>s.name===name);
-  if(idx>=0) modChoices[modId].splice(idx,1); // deselect
-  else modChoices[modId].push({name, price}); // select
+  if(idx>=0){
+    modChoices[modId].splice(idx,1); // deselect
+  } else {
+    // Enforce max constraint
+    const mod = modItem.modifiers.find(m=>m.id===modId);
+    if(mod && mod.max && modChoices[modId].length >= mod.max){
+      toast(`Maximum ${mod.max} selections — deselect one to swap`, "#C4572A");
+      return;
+    }
+    modChoices[modId].push({name, price});
+  }
   renderModOptions();
 }
 
 function pickMod(modId, name, price){
   modChoices[modId] = {name, price};
   renderModOptions();
-  // Enable confirm button if all required mods are picked
-  if(modItem){
-    const requiredMods = modItem.modifiers.filter(m=>m.required);
-    const allPicked = requiredMods.every(m=>modChoices[m.id]);
-    const confirmBtn = document.getElementById("mod-confirm");
-    if(confirmBtn){ confirmBtn.disabled=!allPicked; confirmBtn.style.opacity=allPicked?"1":"0.4"; }
-  }
 }
 
 function confirmMod(){
   if(!modItem) return;
   const requiredMods = modItem.modifiers.filter(m=>m.required);
-  const allPicked = requiredMods.every(m=>modChoices[m.id]);
+  const allPicked = requiredMods.every(m => {
+    if(m.multi){
+      const count = (modChoices[m.id]||[]).length;
+      return count >= (m.min || 1);
+    }
+    return !!modChoices[m.id];
+  });
   if(!allPicked) return;
   addToCart(modItem, modChoices);
   modItem = null; modChoices = {};
@@ -1381,31 +1339,7 @@ function adminTab(t){
 function renderAdmin(){ adminTab("menu-mgmt"); renderStallStatus(); }
 
 function renderAdminMenu(){
-  const sideOn = ls("mod_side_sia", true);
-  const soupOn = ls("mod_soup_sia", true);
-
-  const modSection = `
-    <div style="background:#fff;border:1px solid #E5E0D8;border-radius:12px;margin-bottom:14px;overflow:hidden">
-      <div style="background:#F5F3F0;padding:12px 16px">
-        <div style="font-family:'Playfair Display',serif;font-size:14px;font-weight:700">⚙️ Modifiers</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-top:1px solid #E5E0D8">
-        <div style="flex:1">
-          <div style="font-size:15px;font-weight:700;color:#fff">Add a Side?</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.6)">Butter Rice / Egg / Mashed Potato / Fries / Spaghetti</div>
-        </div>
-        <button onclick="toggleMod('side')" style="background:${sideOn?"#DCFCE7":"#F5F3F0"};color:${sideOn?"#16A34A":"#78716C"};border:1px solid ${sideOn?"#86EFAC":"#E5E0D8"};border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;min-width:40px">${sideOn?"On":"Off"}</button>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-top:1px solid #E5E0D8">
-        <div style="flex:1">
-          <div style="font-size:15px;font-weight:700;color:#fff">Add Mushroom Soup?</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.6)">+$1.90</div>
-        </div>
-        <button onclick="toggleMod('soup')" style="background:${soupOn?"#DCFCE7":"#F5F3F0"};color:${soupOn?"#16A34A":"#78716C"};border:1px solid ${soupOn?"#86EFAC":"#E5E0D8"};border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;min-width:40px">${soupOn?"On":"Off"}</button>
-      </div>
-    </div>`;
-
-  document.getElementById("admin-menu-mgmt").innerHTML = modSection + menu.map(cat=>`
+  document.getElementById("admin-menu-mgmt").innerHTML = menu.map(cat=>`
     <div style="background:#fff;border:1px solid #E5E0D8;border-radius:12px;margin-bottom:14px;overflow:hidden">
       <div style="background:#F5F3F0;padding:12px 16px;display:flex;align-items:center;justify-content:space-between">
         <div style="font-family:'Playfair Display',serif;font-size:14px;font-weight:700">${cat.emoji} ${cat.name}</div>
@@ -1427,10 +1361,7 @@ function renderAdminMenu(){
 }
 
 function toggleMod(mod){
-  const key = "mod_"+mod+"_sia";
-  lss(key, !ls(key, true));
-  renderAdminMenu();
-  renderMenu();
+  // Legacy stub — modifier toggles removed in SIA v2 since modifiers are baked into items.
 }
 
 function toggleAvail(cid,iid){
@@ -2529,7 +2460,7 @@ db.ref("stall_status").on("value", snap=>{
 });
 
 // Clear old Firebase availability if version changed
-const menuVersion = "sia_v1";
+const menuVersion = "sia_v2";
 if(ls("last_menu_version","") !== menuVersion){
   db.ref("availability").remove();
   lss("last_menu_version", menuVersion);
